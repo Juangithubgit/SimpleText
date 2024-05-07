@@ -4,6 +4,7 @@ import turtle
 # import pygame
 import time
 import math
+from simple_make import SimpleMake
 
 
 dumbo_list_of_things = {
@@ -27,28 +28,9 @@ dumbo_list_of_things = {
 }
 
 
-def make_graph(title, rows , columns):
-    row_names = []
-    for row in rows:
-        row_names.append(row)
-    if len(row_names) <= 5:
-        print("----------------------------------------")
-        print("                " + title)
-    else:
-        print("------------------------------------------------------------------------------------")
-        print("                " + title)
-    for name in row_names:
-        print("    " + name, end = ' ')
-    print()
-    for column in columns:
-        print(column)
-
-
-
-
-
-
-
+def make_graph():
+    s = SimpleMake("graph")
+    s.make(["col1", "col2"], ["row1", "row2"], [['dog', 3], [2, 3], [3, 4]])
 
 user = None
 arg = False
