@@ -1,1 +1,2 @@
-create_graph()
+create_graph(["col1", "col2", "col3"], ["row1", "row2", "row3"], [[10, 3], [2, 3], [3, 4]])
+show(get('avg', 'graph'))

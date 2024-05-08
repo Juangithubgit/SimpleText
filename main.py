@@ -6,7 +6,7 @@ import time
 import math
 from simple_make import SimpleMake
 
-
+global graph
 dumbo_list_of_things = {
     'run_if': 'while',
     'show': 'print',
@@ -28,9 +28,21 @@ dumbo_list_of_things = {
 }
 
 
-def make_graph():
-    s = SimpleMake("graph")
-    s.make(["col1", "col2"], ["row1", "row2"], [['dog', 3], [2, 3], [3, 4]])
+def make_graph(columns, rows, data):
+    graph = SimpleMake("graph")
+    graph.make(columns, rows, data)
+    graph.show()
+
+
+def get(arg, item):
+    if item.lower() == "graph":
+        try:
+
+            return graph.give(arg.lower())
+        except Exception as e:
+            return None
+
+
 
 user = None
 arg = False
