@@ -34,7 +34,7 @@ class SimpleMake:
             plt.plot(a)
             plt.show()
 
-    def give(self, arg3):
+    def __call__(self, arg3):
         if arg3.lower() == 'total':
             return self.total
         if arg3.lower() == "avg":

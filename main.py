@@ -1,12 +1,12 @@
 import random
 import string
 import turtle
-# import pygame
+import pygame
 import time
 import math
 from simple_make import SimpleMake
 
-global graph
+
 dumbo_list_of_things = {
     'run_if': 'while',
     'show': 'print',
@@ -22,9 +22,10 @@ dumbo_list_of_things = {
     'greater_than': '>',
     'less_than': "<",
     '=or_greater_then': '>=',
-    'create_graph': "make_graph"
-
-
+    'create_graph': "make_graph",
+    "log": 'math.log10',
+    "with": "(",
+    ".": ")"
 }
 
 
@@ -32,16 +33,13 @@ def make_graph(columns, rows, data):
     graph = SimpleMake("graph")
     graph.make(columns, rows, data)
     graph.show()
+    return graph
 
 
-def get(arg, item):
+def get(arg_, item, object):
     if item.lower() == "graph":
-        try:
-
-            return graph.give(arg.lower())
-        except Exception as e:
-            return None
-
+        if arg_ == "avg":
+            return object(arg_.lower())
 
 
 user = None
@@ -73,7 +71,6 @@ def reverse_offset(letter):
 
 def encrypt(data):
     join_this = []
-    return_this = None
     try:
         data = data.spilt()
     except Exception as e:
@@ -87,7 +84,6 @@ def encrypt(data):
 
 def decrypt(data):
     join_this = []
-    return_this = None
     try:
         data = data.spilt()
     except Exception as e:
@@ -167,10 +163,55 @@ def turn():
     exec(code)
 
 
-while user != "q":
-    user = input("> ")
-    try:
-        turn()
-        offset_value = randomized()
-    except Exception as e:
-        print(e)
+pygame.init()
+pygame.font.init()
+my_font = pygame.font.SysFont('Arial', 15)
+pygame.display.set_caption("Shoot the Fruit!")
+
+# set up variables for the display
+SCREEN_HEIGHT = 370
+SCREEN_WIDTH = 530
+size = (SCREEN_WIDTH, SCREEN_HEIGHT)
+text_box = pygame.Rect(200, 200, 150, 32)
+screen = pygame.display.set_mode(size)
+
+
+r = 200
+g = 255
+b = 100
+
+# render the text for later
+message = "Click the fruit to score!"
+display_message = my_font.render(message, True, (255, 255, 255))
+
+
+run = True
+user_input = ""
+display_input = my_font.render(user_input, True, (255, 255, 255))
+# -------- Main Program Loop -----------
+while run:
+    keys = pygame.key.get_pressed()
+    for event in pygame.event.get():  # User did something
+        if event.type == pygame.QUIT:  # If user clicked close
+            run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SEMICOLON:
+                turn()
+            elif event.key == pygame.K_BACKSPACE:
+                user_input = user_input[:-1]
+                print("h")
+            else:
+                file = open('read', "w")
+                with open("read", "w") as f:
+                    f.write()
+
+                user_input += event.unicode
+            display_input = my_font.render(user_input, True, (255, 255, 255))
+    screen.fill((200, 200, 200))
+    screen.blit(display_message, (0, 0))
+    screen.blit(display_input, (text_box.x + 5, text_box.y + 5))
+    text_box.w = max(100, display_input.get_width() + 10)
+    pygame.display.update()
+
+# Once we have exited the main program loop we can stop the game engine:
+pygame.quit()
