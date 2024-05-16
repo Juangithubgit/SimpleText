@@ -172,7 +172,7 @@ pygame.display.set_caption("Shoot the Fruit!")
 SCREEN_HEIGHT = 370
 SCREEN_WIDTH = 530
 size = (SCREEN_WIDTH, SCREEN_HEIGHT)
-text_box = pygame.Rect(200, 200, 150, 32)
+text_box = pygame.Rect(95, 200, 150, 32)
 screen = pygame.display.set_mode(size)
 
 
@@ -184,29 +184,42 @@ b = 100
 message = "Click the fruit to score!"
 display_message = my_font.render(message, True, (255, 255, 255))
 
+lines = {1: ""}
 
 run = True
 user_input = ""
 display_input = my_font.render(user_input, True, (255, 255, 255))
+show_input = ""
 # -------- Main Program Loop -----------
 while run:
+    i = 1
     keys = pygame.key.get_pressed()
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SEMICOLON:
+                file = open('read', "w")
+                with open("read", "w") as f:
+                    f.write(user_input)
                 turn()
+            elif event.key == pygame.K_RETURN:
+                print("d")
+                user_input += ""
+                lines[i +1] = None
+                i += 1
             elif event.key == pygame.K_BACKSPACE:
                 user_input = user_input[:-1]
                 print("h")
             else:
-                file = open('read', "w")
-                with open("read", "w") as f:
-                    f.write()
-
                 user_input += event.unicode
-            display_input = my_font.render(user_input, True, (255, 255, 255))
+                lines[i] = user_input
+            for x in range(len(lines)):
+                try:
+                    show_input += lines[x + 1] + '\n'
+                except Exception as TypeError:
+                    pass
+            display_input = my_font.render(show_input, True, (255, 255, 255))
     screen.fill((200, 200, 200))
     screen.blit(display_message, (0, 0))
     screen.blit(display_input, (text_box.x + 5, text_box.y + 5))
