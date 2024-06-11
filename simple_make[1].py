@@ -11,12 +11,8 @@ class SimpleMake:
     def make(self, columns, rows, data):
         if self.arg1 == 'graph':
             plt.figure()
-            my_table = plt.table(cellText=data,
-                                colWidths=[0.1] * 3,
-                                rowLabels=rows,
-                                colLabels=columns,
-                                rowColours=None,
-                                loc='upper right')
+            my_table = plt.table(cellText=data, colWidths=[0.1] * 3, rowLabels=rows, colLabels=columns, rowColours=None,
+                                 loc='upper right')
             try:
                 items = 0
                 for values in data:
@@ -25,6 +21,7 @@ class SimpleMake:
                 self.avg = self.total/items
 
             except Exception as e:
+                print(e)
                 self.total = None
             self.graph = my_table
 
