@@ -1,48 +1,53 @@
 import random
 import string
-import turtle
 import pygame
 import time
-import math
-#: For users use/ I.e. if they want to exec features from time or math
-import sys
 from simple_make import SimpleMake
 from button import Button
 from menu import Menu
 
 
-list_of_things = {
+dictionary = {
     'run_if': 'while',
+    "w`": "while",
     'show': 'print',
-    'execute': ':',
+    "p`": 'print',
+    'do': ':',
     'then_do': ':',
     'define': 'def',
     "go": "pass",
     "generate_rstring": "grw",
     "send_to": "s_connect",
     "connect_to": "c_connect",
-    "random_hide": "encrypt",
+    "r_hide": "encrypt",
     'unhide': "decrypt",
     'greater_than': '>',
     'less_than': "<",
     '=or_greater_then': '>=',
     'create_graph': "make_graph",
-    "log": 'math.log10',
-    "with": "(",
-    ".": ")"
+    "mark_time": 'clock_start',
+    "time.s": 'clock_start',
+    '^': "**",
+    't`': "try:",
+    'e`': "except Exception as e",
+    'f`': 'for'
 }
+
+
+def clock_start():
+    return time.time()
 
 
 def display_lines(surface, text, font, color, location):
     h = font.get_height()
-    x, y = location
+    x1, y1 = location
     multi_text = text.split("|")
     for i, words in enumerate(multi_text):
         num = str(i + 1)
         text_surface = font.render(words, True, color)
         number_of_line = font.render(num, True, (100, 200, 10))
-        surface.blit(text_surface, (x, (y + (i*h))))
-        surface.blit(number_of_line, (x - 30, (y + i*h)))
+        surface.blit(text_surface, (x1, (y1 + (i*h))))
+        surface.blit(number_of_line, (x1 - 30, (y1 + i*h)))
 
 
 def line_to_exec(txt):
@@ -53,7 +58,6 @@ def line_to_exec(txt):
 
 def string_to_display(list_):
     s = '|'
-    print(list_)
     s = s.join(list_)
     return s
 
@@ -168,19 +172,17 @@ def start():
     for w in file_to_read:
         data.append(w.rstrip())
     for i in range(len(data)):
-        for thing in list_of_things:
-            if thing in data[i]:
-                key = list_of_things.get(thing)
-                data[i] = data[i].replace(thing, key)
+        for word in dictionary:
+            if word in data[i]:
+                key = dictionary.get(word)
+                data[i] = data[i].replace(word, key)
 
-    for token in data:
+    for line in data:
         with open('execute', 'a') as f_:
-            f_.write(token + "\n")
+            f_.write(line + "\n")
     with open('execute', 'r') as fi:
         code = fi.read()
     exec(code)
-
-
 
 
 pygame.init()
@@ -207,6 +209,7 @@ display_message = my_font.render(message, True, (255, 255, 255))
 
 lines = {1: ""}
 
+
 run = True
 user_input = ""
 display_input = my_font.render(user_input, True, (255, 255, 255))
@@ -214,34 +217,44 @@ show_input = ""
 placeholder = ''
 index = 1
 position = 1
+button_pressed = True
 left_pressed = 0
 pos_last = True
 button = Button(15, 20)
-menu_1 = Menu(1, 650, "----> Guide", screen)
+menu_1 = Menu(1, 650, "----> Guide")
+menu_frame_2 = False
 menu_open = False
+saved_event = ""
 number_line = ""
 output = ""
-welcome = 'Welcome to SimpleTxt now with Tkinter and Plots'
+welcome = 'Welcome to SimpleTxt'
 typeable = True
-# -------- Main Program Loop -----------
+
 while run:
     keys = pygame.key.get_pressed()
     mouse = pygame.mouse.get_pos()
+    x, y = mouse
     offset_value = random.randint(1, 5)
-
+    screen.fill((35, 35, 35))
     for event in pygame.event.get():  # User did something
         if event.type == pygame.QUIT:  # If user clicked close
             run = False
+        saved_event = event.type
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             if button.rect.collidepoint(mouse):
+                button_pressed = not button_pressed
                 button.switch_image()
-                file = open('read', "w")
-                with open("read", "w") as f:
-                    f.write((line_to_exec(show_input)))
-                start()
+                if button_pressed:
+                    file = open('read', "w")
+                    with open("read", "w") as f:
+                        f.write((line_to_exec(show_input)))
+                    start()
+
             if menu_1.rect.collidepoint(mouse):
                 menu_open = not menu_open
+            if x <= 749 and y <= 200:
+                menu_frame_2 = True
 
         if position == 0 or position == len(user_input):
             pos_last = True
@@ -257,20 +270,14 @@ while run:
                 if position != len(user_input):
                     position += 2
 
-            if event.key == pygame.K_SEMICOLON:
-                file = open('read', "w")
-                typeable = False
-                with open("read", "w") as f:
-                    f.write((line_to_exec(show_input)))
-                start()
-            elif event.key == pygame.K_RETURN:
+            if event.key == pygame.K_RETURN:
                 user_input = ""
                 lines[index + 1] = ""
                 index += 1
                 position = 1
                 typeable = False
 
-            elif event.key == pygame.K_BACKSPACE:
+            if event.key == pygame.K_BACKSPACE:
                 pos = position - 1
                 user_input = user_input[:(position - 1)]
                 lines[index] = lines[index][:pos]
@@ -278,7 +285,7 @@ while run:
                 if position > 1:
                     position -= 1
 
-            elif event.key == pygame.K_UP:
+            if event.key == pygame.K_UP:
                 if (index - 1) != 0:
                     up_line = True
                     index -= 1
@@ -288,16 +295,21 @@ while run:
                         position = 1
                     typeable = False
 
-            elif event.key == pygame.K_DOWN:
+            if event.key == pygame.K_DOWN:
                 try:
                     if lines[index + 1]:
                         index += 1
                         user_input = lines[index]
                         position = len(user_input)
-                except Exception as KeyError:
+                except Exception as an_error:
+                    print(an_error)
                     lines[index + 1] = ""
                     index += 1
                     user_input = ""
+                typeable = False
+            if event.key == pygame.K_TAB:
+                user_input += "    "
+                position += 3
                 typeable = False
 
             if pos_last and typeable:
@@ -311,7 +323,6 @@ while run:
                     user_input_spilt.insert(position, event.unicode)
                     user_input = "".join(user_input_spilt)
                     lines[index] = user_input
-                    print(position)
                     position += 1
 
             for x in range(len(lines)):
@@ -325,10 +336,10 @@ while run:
         show_input = string_to_display(lines_txt)
     welcome_display = my_font.render(welcome, True, (255, 255, 255))
     typeable = True
-    screen.fill((35, 35, 35))
+
     if menu_open:
-        print("menu")
-        menu_1.open(screen)
+        menu_1.open(screen, saved_event, not menu_frame_2, user_input, dictionary)
+
     screen.blit(menu_1.image, menu_1.rect)
     screen.blit(welcome_display, (470, 720))
     screen.blit(button.image, button.rect)
