@@ -1,5 +1,4 @@
 import pygame
-import random
 
 
 class Button:
@@ -13,7 +12,6 @@ class Button:
         self.rect = pygame.Rect(self.x, self.y, self.image_size[0], self.image_size[1])
         self.different = True
 
-
     def switch_image(self):
         image_number = 0
         if not self.different:
@@ -21,6 +19,3 @@ class Button:
         self.image = pygame.image.load(self.image_list[image_number])
         self.image_size = self.image.get_size()
         self.different = not self.different
-
-
-
