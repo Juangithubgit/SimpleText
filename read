@@ -1,0 +1,1 @@
+create_graph(["Dogs", "Cats"], ["Yes", "No"], [[10, 20], [30, 40]])
